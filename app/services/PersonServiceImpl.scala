@@ -2,6 +2,7 @@ package services
 import models.Person
 import repositores.PersonRepository
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.Future
 
@@ -14,7 +15,7 @@ class PersonServiceImpl @Inject()(repo: PersonRepository) extends PeronService {
     repo.allPersons(limit, offset)
   }
 
-  override def delete(id: Int): Future[Int] = {
+  override def delete(id: UUID): Future[UUID] = {
     repo.delete(id)
   }
 }

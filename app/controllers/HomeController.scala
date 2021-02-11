@@ -14,6 +14,7 @@ import play.api.mvc.Results.Ok
 import play.api.mvc._
 import services.PersonServiceImpl
 
+
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -22,17 +23,15 @@ import scala.concurrent.Future
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
-case class PersonData(username: String, email: Option[String])
 
 @Singleton
 class HomeController @Inject()(val controllerComponents: MessagesControllerComponents, personService: PersonServiceImpl) extends MessagesBaseController {
-
-
   val personForm = Form(
     mapping(
+      "id" -> default(uuid, UUID.randomUUID()),
       "username" -> nonEmptyText ,
       "email" -> optional(nonEmptyText)
-    )(PersonData.apply)(PersonData.unapply)
+    )(Person.apply)(Person.unapply)
   )
   /**
    * Create an Action to render an HTML page.
@@ -52,7 +51,7 @@ class HomeController @Inject()(val controllerComponents: MessagesControllerCompo
     personForm.bindFromRequest().fold(
       error => Future.successful(Ok("Error")),
       res => {
-        personService.insert(Person(0, res.username, res.email))
+        personService.insert(Person(res.id, res.username, res.email))
         Future.successful(Redirect(routes.HomeController.index()))
       }
     )
@@ -69,7 +68,7 @@ class HomeController @Inject()(val controllerComponents: MessagesControllerCompo
 
     }
   }
-  def delete(id: Int) = Action {
+  def delete(id: UUID) = Action {
     personService.delete(id)
     Redirect(routes.HomeController.index())
   }

@@ -6,7 +6,7 @@
 # An example controller showing a sample home page
 GET     /                                controllers.HomeController.index
 GET     /login                          controllers.HomeController.login
-GET     /delete/:id                          controllers.HomeController.delete(id: Int)
+GET     /delete/:id                          controllers.HomeController.delete(id: java.util.UUID)
 +nocsrf
 POST    /add                              controllers.HomeController.insert
 GET    /list                              controllers.HomeController.persons()
