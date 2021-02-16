@@ -23,15 +23,14 @@ import scala.concurrent.Future
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
-
+case class PersonData(username: String, email: Option[String])
 @Singleton
 class HomeController @Inject()(val controllerComponents: MessagesControllerComponents, personService: PersonServiceImpl) extends MessagesBaseController {
   val personForm = Form(
     mapping(
-      "id" -> default(uuid, UUID.randomUUID()),
       "username" -> nonEmptyText ,
       "email" -> optional(nonEmptyText)
-    )(Person.apply)(Person.unapply)
+    )(PersonData.apply)(PersonData.unapply)
   )
   /**
    * Create an Action to render an HTML page.
@@ -43,16 +42,16 @@ class HomeController @Inject()(val controllerComponents: MessagesControllerCompo
   def index() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
   }
-  def login() = Action { implicit request: MessagesRequest[AnyContent] =>
-    Ok(views.html.login())
+  def login() = Action.async { implicit request =>
+    Future.successful(Ok(views.html.login()))
   }
 
   def insert = Action.async { implicit request => {
     personForm.bindFromRequest().fold(
-      error => Future.successful(Ok("Error")),
+      error => Future.successful(Ok("error")),
       res => {
-        personService.insert(Person(res.id, res.username, res.email))
-        Future.successful(Redirect(routes.HomeController.index()))
+        personService.insert(Person(UUID.randomUUID(), res.username, res.email))
+        Future.successful(Redirect(routes.HomeController.index()).flashing("error" -> "Hellow Ghasem"))
       }
     )
     }
