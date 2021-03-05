@@ -1,0 +1,24 @@
+@(addresses: Seq[models.Address])
+
+@main("Addresses", "This is list of Addresses") {
+    <table class="table table-hover">
+        <tr>
+            <td>City</td>
+            <td>Street</td>
+            <td>Delete</td>
+        </tr>
+        @for(address <- addresses) {
+            <tr>
+                <td>
+                @address.city
+                </td>
+                <td>
+                @address.street
+                </td>
+                <td>
+                    <a href="@routes.AddressController.delete(address.id)"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        }
+    </table>
+}

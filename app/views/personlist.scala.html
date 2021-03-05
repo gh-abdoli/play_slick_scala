@@ -1,0 +1,71 @@
+@(persons: Seq[models.Person])
+
+@main("Persons", "This is list of persons") {
+    <table class="table table-hover">
+        <tr>
+            <td>Username</td>
+            <td>Email</td>
+            <td>Addresses</td>
+            <td>Delete</td>
+        </tr>
+        @for(person <- persons) {
+            <tr>
+                <td>
+                @person.username
+                </td>
+                <td>
+                @person.email
+                </td>
+                <td>
+                    <button type="button" id="button-address-Modal" class="btn btn-primary" data-toggle="modal" onclick="modalData()" data-target="#addressModal" data-whatever="@person.id">Add</button>
+                </td>
+                <td>
+                    <a href="@routes.PersonController.delete(person.id)"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="pagination">
+        <a id="prev" href="@routes.PersonController.personList()" onclick=ptr("prev") >&laquo;</a>
+        @for(i <- 0 to (persons.length / 2)) {
+            <a href="@routes.PersonController.personList()?limit=2&offset=@{
+                i
+            }">@{
+                i
+            }</a>
+        }
+        <a id="next" href="@routes.PersonController.personList()" onclick=ptr("next") >&raquo;</a>
+    </div>
+
+    <form action="@routes.AddressController.add()" method="post">
+        <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addressModalLabel">Add new address </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="person-id" class="control-label">Person Id:</label>
+                            <input type="text" name="person_id" class="form-control" id="person-id" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="street-name" class="control-label">Street:</label>
+                            <input type="text" name="street" class="form-control" id="street-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="city-name" class="control-label">City:</label>
+                            <input type="text" name="city" class="form-control" id="city-name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Address</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}

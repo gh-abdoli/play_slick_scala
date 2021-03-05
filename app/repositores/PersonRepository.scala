@@ -1,31 +1,28 @@
 package repositores
 
 import models.{Person, db, personTables}
-import play.api.libs.json.JsPath.json
-import play.api.libs.json.{JsPath, Json}
-import repositores.SlickTables.PersonTables
 import slick.jdbc.MySQLProfile.api._
-import slick.lifted.TableQuery
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import scala.language.postfixOps
 
 class PersonRepository {
 
-  //lazy val db = Connection.db
-  //lazy val personTables = TableQuery[PersonTables]
+  /*
+  type query = TableQuery[PersonTables]
+
+  lazy val db = Connection.db
+  lazy val personTables = TableQuery[PersonTables]
+  */
 
   def insert(person: Person): Future[Person] = {
     //Await.result(db.run(personTables.schema.create), 2 seconds)
-    db.run {
-      personTables += person
-  }.map( _ => person)
+    db.run(personTables += person).map(_ => person)
   }
 
-  def allPersons(limit: Long, offset: Long):Future[Seq[Person]] =  {
+  def allPersons(limit: Long, offset: Long): Future[Seq[Person]] = {
     db.run(personTables.drop(offset).take(limit + offset).result)
   }
 
