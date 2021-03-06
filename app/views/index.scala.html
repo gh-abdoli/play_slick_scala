@@ -1,8 +1,10 @@
-@()
+@()(implicit flash: Flash)
 
-@main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
+@main("index", "Welcome to Play") {
+
+  <h2>@flash.get("error")</h2>
+
   <a href="@routes.HomeController.login()">Login</a>
-  <a href="@routes.HomeController.persons()?limit=2&offset=0">List</a>
+  <a href="@routes.PersonController.personList()?limit=2&offset=0">List</a>
 }
 

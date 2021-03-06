@@ -1,8 +1,7 @@
 @()(implicit request: MessagesRequestHeader)
 import helper._
 
-@main(Messages("Login")) {
-    <h2>Login page</h2>
+@main(Messages("Login"), "Login page") {
   @*  @helper.form(action = routes.HomeController.insert()) {
         @helper.CSRF.formField
         @helper.inputText(personForm("username"))
@@ -11,9 +10,25 @@ import helper._
             <button type="submit">Save</button>
         </div>
     }*@
-    <form action="@routes.HomeController.insert()" method="post">
-        Username: <input name="username" type="text" /><br/><br/>
-        email: <input name="email" type="text" /><br/><br/>
-        <button type="submit">Save</button>
+
+    <form action="@routes.PersonController.insert()" method="post">
+        <div class="form-group">
+            <label for="inputUsername">Username</label>
+            @helper.CSRF.formField
+            <input type="text" name="username" class="form-control" id="inputUsername" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            @helper.CSRF.formField
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+        </div>
+        <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> Remember me
+                    </label>
+                </div>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
     </form>
 }

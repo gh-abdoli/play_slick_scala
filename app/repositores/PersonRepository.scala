@@ -1,11 +1,7 @@
 package repositores
 
-import models.Person
-import play.api.libs.json.JsPath.json
-import play.api.libs.json.{JsPath, Json}
-import repositores.SlickTables.PersonTables
+import models.{Person, db, personTables}
 import slick.jdbc.MySQLProfile.api._
-import slick.lifted.TableQuery
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,17 +10,19 @@ import scala.language.postfixOps
 
 class PersonRepository {
 
+  /*
+  type query = TableQuery[PersonTables]
+
   lazy val db = Connection.db
   lazy val personTables = TableQuery[PersonTables]
+  */
 
   def insert(person: Person): Future[Person] = {
-    db.run {
-      personTables += person
-  }.map( _ => person)
+    db.run(personTables += person).map(_ => person)
   }
 
-  def allPersons(limit: Long, offset: Long):Future[Seq[Person]] =  {
-    db.run(personTables.drop(offset).take(limit).result)
+  def allPersons(limit: Long, offset: Long): Future[Seq[Person]] = {
+    db.run(personTables.drop(offset).take(limit + offset).result)
   }
 
   def delete(id: UUID): Future[UUID] = {
