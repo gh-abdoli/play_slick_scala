@@ -18,7 +18,6 @@ class PersonRepository {
   */
 
   def insert(person: Person): Future[Person] = {
-    //Await.result(db.run(personTables.schema.create), 2 seconds)
     db.run(personTables += person).map(_ => person)
   }
 
